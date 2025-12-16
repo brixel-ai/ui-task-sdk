@@ -167,6 +167,88 @@ interface BrixelContext {
 }
 ```
 
+## Executing Other UI Tasks
+
+The SDK allows UI Tasks to execute other UI Tasks programmatically using the `executeTask` function.
+
+### Basic Usage
+
+```tsx
+import { useBrixelTask } from "@brixel/ui-task-sdk";
+
+function MyUITask() {
+  const { executeTask } = useBrixelTask();
+
+  const handleExecuteTask = async () => {
+    const result = await executeTask({
+      taskUuid: "78c2482f-b47d-461c-9fd0-509476687be9",
+      inputs: { name: "value" },
+    });
+
+    if (result.success) {
+      console.log("Task executed:", result.data);
+    } else {
+      console.error("Error:", result.error);
+    }
+  };
+
+  return <button onClick={handleExecuteTask}>Execute Task</button>;
+}
+```
+
+### Authentication
+
+The `executeTask` function supports two authentication methods (in priority order):
+
+1. **API Token via postMessage** (RECOMMENDED): The parent interface passes the token via the INIT message
+2. **Cookies fallback**: Uses `credentials: 'include'` if no token provided
+
+#### Passing Token from Parent
+
+```typescript
+// In parent application (console.brixel.ai)
+const authToken = getCookieValue('auth_token');
+
+iframe.contentWindow.postMessage({
+  type: 'BRIXEL_INIT',
+  payload: {
+    runId: 'run-123',
+    inputs: { /* ... */ },
+    context: {
+      apiToken: authToken,
+      // ... other context fields
+    }
+  }
+}, 'https://cdn.brixel.ai');
+```
+
+The UI Task automatically receives this token and uses it for `executeTask` calls:
+
+```tsx
+const { executeTask, context } = useBrixelTask();
+
+// Token from context is automatically used
+await executeTask({
+  taskUuid: "task-uuid",
+  inputs: {}
+});
+
+```
+
+### API URL Auto-Detection
+
+The SDK automatically detects your environment and uses the appropriate API:
+
+- **Development** (localhost): `http://localhost:8000/backoffice/ui-components`
+- **Production**: `https://api.brixel.ai/backoffice/ui-components`
+
+When running on localhost, you'll see:
+```
+[Brixel SDK] Using API URL: http://localhost:8000/backoffice/ui-components
+```
+
+See [DEVELOPMENT.md](./DEVELOPMENT.md) for details on local development setup.
+
 ## PostMessage Protocol
 
 The SDK handles the following message types automatically:

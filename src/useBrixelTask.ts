@@ -7,6 +7,7 @@ import type {
   UseBrixelTaskOptions,
   UseBrixelTaskResult,
 } from "./types";
+import { createExecuteTask } from "./executeTask";
 
 const SDK_VERSION = "1.0.0";
 
@@ -264,6 +265,16 @@ export function useBrixelTask<TInputs = unknown, TOutput = unknown>(
     };
   }, [runId, setHeight]);
 
+  // Create executeTask bound to current context
+  const executeTask = useCallback(
+    createExecuteTask({
+      apiToken: context?.apiToken,
+      conversationId: context?.conversationId,
+      apiBaseUrl: context?.apiBaseUrl,
+    }),
+    [context?.apiToken, context?.conversationId, context?.apiBaseUrl]
+  );
+
   return {
     inputs,
     context,
@@ -275,5 +286,6 @@ export function useBrixelTask<TInputs = unknown, TOutput = unknown>(
     setHeight,
     log,
     isEmbedded: isEmbedded.current,
+    executeTask,
   };
 }

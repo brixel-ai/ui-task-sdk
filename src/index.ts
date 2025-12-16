@@ -28,6 +28,9 @@
 // Main hook
 export { useBrixelTask } from "./useBrixelTask";
 
+// Execute Task API
+export { executeTask, createExecuteTask } from "./executeTask";
+
 // Types
 export type {
   // Core types
@@ -51,6 +54,9 @@ export type {
   CancelMessage,
   ErrorMessage,
   LogMessage,
+  // Execute Task API types
+  ExecuteTaskParams,
+  ExecuteTaskResponse,
 } from "./types";
 
 // Development tools

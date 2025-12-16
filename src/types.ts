@@ -45,6 +45,12 @@ export interface BrixelContext {
     fullscreen: boolean;
     fileUpload: boolean;
   };
+  /** Conversation ID for API calls (optional) */
+  conversationId?: string;
+  /** API token passed by parent for authenticated requests (recommended over cookies) */
+  apiToken?: string;
+  /** Optional custom API base URL (for development/testing) */
+  apiBaseUrl?: string;
 }
 
 /**
@@ -53,7 +59,7 @@ export interface BrixelContext {
 export interface UITaskManifest {
   id: string;
   version: string;
-  type: "ui_task";
+  type: "ui_component";
   name: string;
   description?: string;
   renderMode: RenderMode;
@@ -226,6 +232,10 @@ export interface UseBrixelTaskResult<TInputs, TOutput> {
   log: (level: "debug" | "info" | "warn" | "error", message: string, data?: unknown) => void;
   /** Whether running inside Brixel iframe */
   isEmbedded: boolean;
+  /** Execute another UI Task (bound to current context) */
+  executeTask: <TTaskOutput = unknown>(
+    params: Omit<ExecuteTaskParams, "conversationId" | "apiToken" | "apiBaseUrl">
+  ) => Promise<ExecuteTaskResponse<TTaskOutput>>;
 }
 
 export interface UseBrixelTaskOptions {
@@ -237,4 +247,37 @@ export interface UseBrixelTaskOptions {
   onDestroy?: () => void;
   /** Enable debug logging */
   debug?: boolean;
+}
+
+// ============================================================================
+// Execute Task API Types
+// ============================================================================
+
+/**
+ * Parameters for executing a UI Task via the API
+ */
+export interface ExecuteTaskParams {
+  /** UUID of the task to execute */
+  taskUuid: string;
+  /** Input values for the task */
+  inputs: Record<string, unknown>;
+  /** Optional conversation ID for x-conversation-id header */
+  conversationId?: string;
+  /** Optional API token (if not provided, uses credentials: 'include' as fallback) */
+  apiToken?: string;
+  /** Optional custom API base URL (auto-detects dev/prod if not provided) */
+  apiBaseUrl?: string;
+}
+
+/**
+ * Response from the execute task API
+ */
+export interface ExecuteTaskResponse<TOutput = unknown> {
+  success: boolean;
+  data?: TOutput;
+  error?: {
+    code: string;
+    message: string;
+    details?: unknown;
+  };
 }
