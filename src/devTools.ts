@@ -207,5 +207,33 @@ export function createMockBrixelHost<TInputs = unknown, TOutput = unknown>(optio
       window.removeEventListener("message", handleMessage);
       currentRunId = null;
     },
+
+    updateTheme(theme: BrixelContext["theme"]) {
+      if (!currentRunId) {
+        console.warn("[MockHost] Cannot update theme - no active run");
+        return;
+      }
+      window.postMessage(
+        {
+          type: "BRIXEL_UPDATE_THEME",
+          payload: { runId: currentRunId, theme },
+        },
+        "*"
+      );
+    },
+
+    updateLocale(locale: string) {
+      if (!currentRunId) {
+        console.warn("[MockHost] Cannot update locale - no active run");
+        return;
+      }
+      window.postMessage(
+        {
+          type: "BRIXEL_UPDATE_LOCALE",
+          payload: { runId: currentRunId, locale },
+        },
+        "*"
+      );
+    },
   };
 }

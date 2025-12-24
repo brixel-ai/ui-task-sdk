@@ -228,6 +228,20 @@ export function useBrixelTask<TInputs = unknown, TOutput = unknown>(
           debugLog("Destroy received");
           break;
         }
+
+        case "BRIXEL_UPDATE_THEME": {
+          const { theme } = message.payload;
+          setContext((prev) => (prev ? { ...prev, theme } : prev));
+          debugLog("Theme updated:", theme);
+          break;
+        }
+
+        case "BRIXEL_UPDATE_LOCALE": {
+          const { locale } = message.payload;
+          setContext((prev) => (prev ? { ...prev, locale } : prev));
+          debugLog("Locale updated:", locale);
+          break;
+        }
       }
     };
 

@@ -117,10 +117,34 @@ export interface DestroyMessage {
   };
 }
 
+/**
+ * UPDATE_THEME: Sent when the host theme changes
+ */
+export interface UpdateThemeMessage {
+  type: "BRIXEL_UPDATE_THEME";
+  payload: {
+    runId: string;
+    theme: BrixelContext["theme"];
+  };
+}
+
+/**
+ * UPDATE_LOCALE: Sent when the host locale changes
+ */
+export interface UpdateLocaleMessage {
+  type: "BRIXEL_UPDATE_LOCALE";
+  payload: {
+    runId: string;
+    locale: string;
+  };
+}
+
 export type HostToIframeMessage<TInputs = unknown> =
   | InitMessage<TInputs>
   | UpdateInputsMessage<TInputs>
-  | DestroyMessage;
+  | DestroyMessage
+  | UpdateThemeMessage
+  | UpdateLocaleMessage;
 
 // ============================================================================
 // PostMessage Protocol - Iframe to Host

@@ -46,6 +46,8 @@ export type {
   InitMessage,
   UpdateInputsMessage,
   DestroyMessage,
+  UpdateThemeMessage,
+  UpdateLocaleMessage,
   // Protocol messages - Iframe to Host
   IframeToHostMessage,
   ReadyMessage,

@@ -207,7 +207,7 @@ The `executeTask` function supports two authentication methods (in priority orde
 
 ```typescript
 // In parent application (console.brixel.ai)
-const authToken = getCookieValue('auth_token');
+const authToken = getCookieValue('token');
 
 iframe.contentWindow.postMessage({
   type: 'BRIXEL_INIT',
@@ -219,7 +219,7 @@ iframe.contentWindow.postMessage({
       // ... other context fields
     }
   }
-}, 'https://cdn.brixel.ai');
+});
 ```
 
 The UI Task automatically receives this token and uses it for `executeTask` calls:
@@ -257,6 +257,8 @@ The SDK handles the following message types automatically:
 
 - `BRIXEL_INIT`: Initialize with inputs and context
 - `BRIXEL_UPDATE_INPUTS`: Update inputs during execution
+- `BRIXEL_UPDATE_THEME`: Update theme (`"light" | "dark" | "system"`)
+- `BRIXEL_UPDATE_LOCALE`: Update locale (e.g. `"fr-FR"`)
 - `BRIXEL_DESTROY`: Cleanup signal
 
 ### Iframe → Host
